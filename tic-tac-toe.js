@@ -1,28 +1,44 @@
 process.stdin.setEncoding('utf8');
 var xIsCurrent = true;
-
-
+var gameIsOver = false;
+var boardState = new Array(9);
 
 function promptNextPlayer(callback) {
   xIsCurrent ? console.log('X\'s turn:') : console.log('O\'s turn:');
   process.stdin.on('readable', function() {
     var chunk = process.stdin.read();
     if (chunk !== null) {
-      callback(chunk);
+      if (chunk.trim().toUpperCase() === 'Q') {
+        process.exit();
+      } else {
+        callback(chunk.trim());
+      }
     }
   });
 }
 
+function handlePlayerAnswer(answer) {
+  var currentPlayer = xIsCurrent ? 'X' : 'O';
 
-// process.stdin.on('readable', function() {
-//   var chunk = process.stdin.read();
-//   if (chunk !== null) {
-//     process.stdout.write(chunk);
-//   }
-// });
+  if (boardState[answer - 1] === undefined){
+    boardState[answer - 1] = currentPlayer;
+    printBoard(boardState);
+    // checkGameState();
+    xIsCurrent = !xIsCurrent;
+    promptNextPlayer(handlePlayerAnswer);
+  } else {
+    console.log('This spave has already been played!');
+    promptNextPlayer(handlePlayerAnswer);
+  }
 
-// var boardState = new Array(9);
+}
 
+function checkGameState() {
+
+  if (gameIsOver) {
+    process.exit();
+  }
+}
 
 function printBoard(board) {
   var output = '\n';
@@ -56,9 +72,4 @@ console.log('Use the following numbers to play the board:\n\n' +
 '---|---|---\n' +
 ' 7 | 8 | 9 \n');
 
-promptNextPlayer((answer) => {
-  var thePlayer = xIsCurrent ? 'X' : 'Y';
-  console.log(thePlayer, 'chose', answer);
-  xIsCurrent = !xIsCurrent;
-  process.exit();
-});
+promptNextPlayer(handlePlayerAnswer);
