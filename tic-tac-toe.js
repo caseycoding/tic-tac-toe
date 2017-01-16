@@ -1,7 +1,27 @@
+process.stdin.setEncoding('utf8');
+var xIsCurrent = true;
 
-// var currentPlayer;
 
-// var boardState = new Array(9).fill('   ')
+
+function promptNextPlayer(callback) {
+  xIsCurrent ? console.log('X\'s turn:') : console.log('O\'s turn:');
+  process.stdin.on('readable', function() {
+    var chunk = process.stdin.read();
+    if (chunk !== null) {
+      callback(chunk);
+    }
+  });
+}
+
+
+// process.stdin.on('readable', function() {
+//   var chunk = process.stdin.read();
+//   if (chunk !== null) {
+//     process.stdout.write(chunk);
+//   }
+// });
+
+// var boardState = new Array(9);
 
 
 function printBoard(board) {
@@ -28,10 +48,17 @@ function printBoard(board) {
   console.log(output);
 }
 
+console.log('Welome to tic-tac-toe!');
+console.log('Use the following numbers to play the board:\n\n' +
+' 1 | 2 | 3 \n' +
+'---|---|---\n' +
+' 4 | 5 | 6 \n' +
+'---|---|---\n' +
+' 7 | 8 | 9 \n');
 
-// var topLeft = ''
-// ' 0 | 1 | 2 '
-// '---|---|---'
-// ' 3 | 4 | 5 '
-// '---|---|---'
-// ' 6 | 7 | 8 '
+promptNextPlayer((answer) => {
+  var thePlayer = xIsCurrent ? 'X' : 'Y';
+  console.log(thePlayer, 'chose', answer);
+  xIsCurrent = !xIsCurrent;
+  process.exit();
+});
